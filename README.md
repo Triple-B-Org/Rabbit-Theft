@@ -1,2 +1,2 @@
 # Rabbit Theft
- A dice gamr.
+ A dice game.
