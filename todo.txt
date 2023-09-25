@@ -1,0 +1,8 @@
+Write rules.
+
+Make local play.
+Make animations.
+
+Make LAN play.
+Make LAN chat.
+LAN chat through second console.
