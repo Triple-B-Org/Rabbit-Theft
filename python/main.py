@@ -59,6 +59,48 @@ def change_player_count(old_number: int) -> int:
     return number_of_players
 
 
+def throw_dice(dice_to_throw: dict) -> list:
+    result_dice: list = []
+
+    for key, value in dice_to_throw.items:
+        for index in range(value):
+            result_dice.append(random.randint(1, key))
+    
+    return result_dice
+
+
+def process_player_turn(player_index: int, player_names: list, player_healths: list, player_items: dict) -> list:
+    print(f"{player_names[player_index]}'s turn.")
+    print(F"Health: {player_healths[player_index]}")
+
+    menu_title: str = "Action:"
+    menu_options: dict = ["New throw.",
+                          "Keep throw."]
+    
+    ## stores:
+    ## die face count: number of die
+    dice_to_throw: dict = {20: 3}
+    dice_thrown_list: list = []
+
+    for index in range(3):
+        print(f"Throw {index + 1}")
+        dice_thrown_list = throw_dice(dice_to_throw)
+
+        while (True):
+            result: int = draw_menu("Action", menu_options)
+            
+            if result == 0:
+                break
+            elif result == 1:
+                index = 3
+                break
+            else:
+                print("Input number not recognized!")
+
+    return dice_thrown_list
+
+
+
 def start_local_game(number_of_players: int) -> None:
     ## string list
     player_names: list = []
@@ -73,8 +115,17 @@ def start_local_game(number_of_players: int) -> None:
         player_healths.append(20)
         player_items.append({})
 
+    player_index: int = 0
+    player_dice_throws: list = []
     while (True):
-        return
+        process_player_turn(player_index, player_names, player_healths, player_items)
+
+        player_index += 1
+        player_index %= len(player_names)
+        if player_index == 0:
+            ## check health and remove
+            pass
+        break
 
     return
 
