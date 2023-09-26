@@ -1,4 +1,5 @@
 import random
+import DicePlayer
 
 
 def draw_welcome_gui() -> None:
@@ -122,18 +123,13 @@ def process_turn(player_healths: list, player_dice_throws: list, alive_players: 
 
 
 def start_local_game(number_of_players: int) -> None:
-    ## string list
-    player_names: list = []
-    ## integer list
-    player_healths: list = []
-    ## dictionary list
-    ## item_name: item_value
-    player_items: list = []
+    all_players: list = []
 
     for player_number in range(number_of_players):
-        player_names.append(input(f"Player {player_number + 1} - Input name: "))
-        player_healths.append(20)
-        player_items.append({})
+        player_name: str = input(f"Player {player_number + 1} - Input name: ")
+        all_players.append(DicePlayer(player_name, 20, {}))
+    
+    return
 
     player_index: int = 0
     player_dice_throws: list = []
