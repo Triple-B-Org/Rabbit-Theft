@@ -100,6 +100,26 @@ def process_player_turn(player_index: int, player_names: list, player_healths: l
     return dice_thrown_list
 
 
+def process_turn(player_healths: list, player_dice_throws: list, alive_players: list) -> None:
+    dice_values: list = []
+    highest_value: int = -1
+    dice_value: int
+
+    for dice_list in player_dice_throws:
+        dice_value = get_dice_value(dice_list)
+        dice_values.append(dice_value)
+
+        if dice_value > highest_value:
+            highest_value = dice_value
+    
+    for index in range(len(dice_values)):
+        player_healths[index] -= highest_value - dice_values[index]
+
+        if player_healths[index] <= 0:
+            alive_players.remove(index)
+
+    return
+
 
 def start_local_game(number_of_players: int) -> None:
     ## string list
@@ -117,15 +137,20 @@ def start_local_game(number_of_players: int) -> None:
 
     player_index: int = 0
     player_dice_throws: list = []
+    alive_players: list = [x for x in range(number_of_players)]
     while (True):
-        process_player_turn(player_index, player_names, player_healths, player_items)
+        player_dice_throws.append(process_player_turn(player_index, player_names, player_healths, player_items))
 
         player_index += 1
-        player_index %= len(player_names)
+        player_index %= number_of_players
+
         if player_index == 0:
-            ## check health and remove
-            pass
-        break
+            process_turn(player_healths, player_dice_throws, alive_players)
+            player_dice_throws = []
+
+            if len(alive_players) == 1:
+                print(f"{player_names[alive_players[0]]} is the winner.")
+                break
 
     return
 
