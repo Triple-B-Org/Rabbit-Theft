@@ -72,10 +72,10 @@ def process_player_turn(dice_player: DicePlayer) -> None:
     ## die face count: number of die
     dice_to_throw: dict = {20: 3}
 
-    for index in range(3):
-        print(f"Throw {index + 1}")
-        dice_player.throw_dice(dice_to_throw)
+    print(f"Throw 1")
+    dice_player.throw_dice(dice_to_throw)
 
+    for index in range(2):
         while (True):
             result: int = draw_menu("Action", menu_options)
             
@@ -85,6 +85,9 @@ def process_player_turn(dice_player: DicePlayer) -> None:
                 return
             else:
                 print("Input number not recognized!")
+        
+        print(f"Throw {index + 2}")
+        dice_player.throw_dice(dice_to_throw)
 
     return
 
@@ -102,7 +105,7 @@ def process_turn(alive_players: list) -> None:
         dice_player.health -= highest_value - dice_player.dice_value
 
         if dice_player.health <= 0:
-            dead_players.append(dice_player.health)
+            dead_players.append(dice_player)
 
     for dice_player in dead_players:
         alive_players.remove(dice_player)
@@ -131,7 +134,7 @@ def start_local_game(number_of_players: int) -> None:
             process_turn(alive_players)
 
             if len(alive_players) == 1:
-                print(f"{player_names[alive_players[0]]} is the winner.")
+                print(f"{alive_players[0].name} is the winner.")
                 break
 
     return

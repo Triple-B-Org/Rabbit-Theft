@@ -22,16 +22,16 @@ class DicePlayer:
 
 
     def throw_dice(self, dice_to_throw: dict) -> None:
-        dice_thrown_dict = {}
+        self.dice_thrown_dict = {}
         for key, value in dice_to_throw.items():
             for index in range(value):
                 result: int = random.randint(1, key)
-                if result in dice_thrown_dict.keys():
-                    dice_thrown_dict[result] += 1
+                if result in self.dice_thrown_dict.keys():
+                    self.dice_thrown_dict[result] += 1
                 else:
-                    dice_thrown_dict[result] = 1
+                    self.dice_thrown_dict[result] = 1
 
-        print(f"Dice rolled: {dice_thrown_dict}")
+        print(f"Dice rolled: {self.dice_thrown_dict}")
         self.calculate_dice_value()
         print(f"Value: {self.dice_value}")
         return
