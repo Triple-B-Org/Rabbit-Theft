@@ -1,5 +1,5 @@
 import random
-import DicePlayer
+from DicePlayer import DicePlayer
 
 
 def draw_welcome_gui() -> None:
@@ -60,32 +60,21 @@ def change_player_count(old_number: int) -> int:
     return number_of_players
 
 
-def throw_dice(dice_to_throw: dict) -> list:
-    result_dice: list = []
-
-    for key, value in dice_to_throw.items:
-        for index in range(value):
-            result_dice.append(random.randint(1, key))
-    
-    return result_dice
-
-
-def process_player_turn(player_index: int, player_names: list, player_healths: list, player_items: dict) -> list:
-    print(f"{player_names[player_index]}'s turn.")
-    print(F"Health: {player_healths[player_index]}")
+def process_player_turn(dice_player: DicePlayer) -> None:
+    print(f"{dice_player.name}'s turn.")
+    print(F"Health: {dice_player.health}")
 
     menu_title: str = "Action:"
     menu_options: dict = ["New throw.",
                           "Keep throw."]
-    
+
     ## stores:
     ## die face count: number of die
     dice_to_throw: dict = {20: 3}
-    dice_thrown_list: list = []
 
     for index in range(3):
         print(f"Throw {index + 1}")
-        dice_thrown_list = throw_dice(dice_to_throw)
+        dice_player.throw_dice(dice_to_throw)
 
         while (True):
             result: int = draw_menu("Action", menu_options)
@@ -98,51 +87,51 @@ def process_player_turn(player_index: int, player_names: list, player_healths: l
             else:
                 print("Input number not recognized!")
 
-    return dice_thrown_list
-
-
-def process_turn(player_healths: list, player_dice_throws: list, alive_players: list) -> None:
-    dice_values: list = []
-    highest_value: int = -1
-    dice_value: int
-
-    for dice_list in player_dice_throws:
-        dice_value = get_dice_value(dice_list)
-        dice_values.append(dice_value)
-
-        if dice_value > highest_value:
-            highest_value = dice_value
-    
-    for index in range(len(dice_values)):
-        player_healths[index] -= highest_value - dice_values[index]
-
-        if player_healths[index] <= 0:
-            alive_players.remove(index)
-
     return
+
+
+# def process_turn(player_healths: list, player_dice_throws: list, alive_players: list) -> None:
+#     dice_values: list = []
+#     highest_value: int = -1
+#     dice_value: int
+
+#     for dice_list in player_dice_throws:
+#         dice_value = get_dice_value(dice_list)
+#         dice_values.append(dice_value)
+
+#         if dice_value > highest_value:
+#             highest_value = dice_value
+    
+#     for index in range(len(dice_values)):
+#         player_healths[index] -= highest_value - dice_values[index]
+
+#         if player_healths[index] <= 0:
+#             alive_players.remove(index)
+
+#     return
 
 
 def start_local_game(number_of_players: int) -> None:
     all_players: list = []
+    alive_players: list = []
 
     for player_number in range(number_of_players):
         player_name: str = input(f"Player {player_number + 1} - Input name: ")
-        all_players.append(DicePlayer(player_name, 20, {}))
-    
-    return
+        dice_player: DicePlayer = DicePlayer(player_name, 20, {})
+        all_players.append(dice_player)
+        alive_players.append(dice_player)
+
 
     player_index: int = 0
-    player_dice_throws: list = []
-    alive_players: list = [x for x in range(number_of_players)]
     while (True):
-        player_dice_throws.append(process_player_turn(player_index, player_names, player_healths, player_items))
+        process_player_turn(alive_players[player_index])
 
         player_index += 1
-        player_index %= number_of_players
+        player_index %= len(alive_players)
 
         if player_index == 0:
-            process_turn(player_healths, player_dice_throws, alive_players)
-            player_dice_throws = []
+            break
+            #process_turn(player_healths, player_dice_throws, alive_players)
 
             if len(alive_players) == 1:
                 print(f"{player_names[alive_players[0]]} is the winner.")
@@ -164,6 +153,9 @@ def local_play() -> None:
 
         if result == 0:
             number_of_players = change_player_count(number_of_players)
+            menu_options = [f"Change number of players. (Currently: {number_of_players})",
+                             "Start game.",
+                             "Return."]
         elif result == 1:
             start_local_game(number_of_players)
         elif result == 2:
