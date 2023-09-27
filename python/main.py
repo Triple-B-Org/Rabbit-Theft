@@ -82,33 +82,32 @@ def process_player_turn(dice_player: DicePlayer) -> None:
             if result == 0:
                 break
             elif result == 1:
-                index = 3
-                break
+                return
             else:
                 print("Input number not recognized!")
 
     return
 
 
-# def process_turn(player_healths: list, player_dice_throws: list, alive_players: list) -> None:
-#     dice_values: list = []
-#     highest_value: int = -1
-#     dice_value: int
+def process_turn(alive_players: list) -> None:
+    highest_value: int = -1
 
-#     for dice_list in player_dice_throws:
-#         dice_value = get_dice_value(dice_list)
-#         dice_values.append(dice_value)
-
-#         if dice_value > highest_value:
-#             highest_value = dice_value
+    for dice_player in alive_players:
+        if dice_player.dice_value > highest_value:
+            highest_value = dice_player.dice_value
     
-#     for index in range(len(dice_values)):
-#         player_healths[index] -= highest_value - dice_values[index]
+    dead_players: list = []
 
-#         if player_healths[index] <= 0:
-#             alive_players.remove(index)
+    for dice_player in alive_players:
+        dice_player.health -= highest_value - dice_player.dice_value
 
-#     return
+        if dice_player.health <= 0:
+            dead_players.append(dice_player.health)
+
+    for dice_player in dead_players:
+        alive_players.remove(dice_player)
+
+    return
 
 
 def start_local_game(number_of_players: int) -> None:
@@ -121,7 +120,6 @@ def start_local_game(number_of_players: int) -> None:
         all_players.append(dice_player)
         alive_players.append(dice_player)
 
-
     player_index: int = 0
     while (True):
         process_player_turn(alive_players[player_index])
@@ -130,8 +128,7 @@ def start_local_game(number_of_players: int) -> None:
         player_index %= len(alive_players)
 
         if player_index == 0:
-            break
-            #process_turn(player_healths, player_dice_throws, alive_players)
+            process_turn(alive_players)
 
             if len(alive_players) == 1:
                 print(f"{player_names[alive_players[0]]} is the winner.")
