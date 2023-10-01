@@ -1,8 +1,10 @@
 import random
 from DicePlayer import DicePlayer
+import os
 
 
 def draw_welcome_gui() -> None:
+    os.system("clear")
     print()
     print("Welcome to Rabbit-Theft!")
     print()
@@ -24,7 +26,6 @@ def draw_menu(title: str, options_names: list) -> int:
     """Returns the index of the selected operation"""
 
     while (True):
-
         print(title)
         index = 1
         for name in options_names:
